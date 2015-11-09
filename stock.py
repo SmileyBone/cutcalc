@@ -16,6 +16,9 @@ class stock(object):
         else:
             raise ValueError("Cut length longer than remaining length")
 
+    def get_waste(self):
+        return self.length / self.start_length
+
     def __eq__(self, other):
         if self.length == other.length:
             return True

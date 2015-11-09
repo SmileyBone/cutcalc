@@ -17,13 +17,18 @@ import part
 
 class cutter(object):
     def __init__(self, stocks, parts):
-        
+        self.stocks = stocks #(stock, number of stock)
+        self.parts = parts #(part, number of part)
 
-        self.stocks = stocks
-        self.parts = parts
+    def solve(self):
+        raise ValueError("not done yet")
 
 
 
 
 if __name__ == "__main__":
-    print "wut"
+    stocks = [(5600, -1)]
+    parts = [(1380, 22), (1520, 25), (1560, 12), (1710, 14) , (1820,18), (1880, 18),
+    (1930, 20), (2000, 10), (2050, 12), (2100, 14), (2140, 16), (2150, 18), (2200, 20)]
+
+    c = cutter(stocks, parts)
