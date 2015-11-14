@@ -17,7 +17,7 @@ class stock(object):
             raise ValueError("Cut length longer than remaining length")
 
     def get_waste(self):
-        return self.length * 1.0 / self.start_length * 1.0
+        return self.length * 1.0
 
     def print_pattern(self):
         pattern = ""

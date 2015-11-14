@@ -55,6 +55,12 @@ class cutter(object):
                     largest = p
         return largest
 
+    def get_waste(self):
+        sum_waste = 0
+        for p in c.patterns:
+            sum_waste += p.get_waste()
+        percent_waste = sum_waste / (5600*len(self.patterns)) * 100
+        return percent_waste, sum_waste
 
 if __name__ == "__main__":
     stocks = [stock(5600)] #for now assume that we have an unlimited quantitiy of stock
@@ -63,11 +69,8 @@ if __name__ == "__main__":
 
     c = cutter(stocks, parts)
     c.solve()
-    waste = 0
-    for p in c.patterns:
-        waste += p.get_waste()
-        print p.print_pattern()
+    p_waste, s_waste = c.get_waste()
 
-    print "waste: ", waste * 100.0 / (len(c.patterns)*5600.0)
-    print "total waste: ", waste
+    print "percent waste: " , p_waste
+    print "total waste: " , s_waste
     print "number of patterns: " , len(c.patterns)
