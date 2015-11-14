@@ -12,23 +12,62 @@ and the list of scrap."""
 
 """the cutter class consumes a list of stock representing the source,
 and a list of parts representing the cut parts."""
-import stock
-import part
+from stock import stock
+from part import part
+import heapq
 
 class cutter(object):
     def __init__(self, stocks, parts):
         self.stocks = stocks #(stock, number of stock)
         self.parts = parts #(part, number of part)
+        self.patterns = [] #list of stock where the remaining length on the stock is smaller than any part length
+        heapq.heapify(self.parts)
 
     def solve(self):
-        raise ValueError("not done yet")
+        """solve the problem with a relaxed optimality constraint."""
+        while self.get_num_parts_left() > 0:
+            if len(self.stocks) == 0:
+                self.stocks.append(stock(5600))#add another stock if we run out
+            for s in self.stocks:
+                p = self.get_largest_fitting_part(s)
+                if p != None:
+                    p.cut += 1
+                    s.cut(p)
+                else:
+                    self.patterns.append(s)
+                    self.stocks.remove(s)
 
+        #add all of the partially cut stocks to the patterns
+        self.patterns.extend(self.stocks)
 
+    def get_num_parts_left(self):
+        parts_left = 0
+        for p in self.parts:
+            parts_left += p.remaining()
+        return parts_left
+
+    """return the part that minimizes stocksize - part size, return none if no part will fit"""
+    def get_largest_fitting_part(self, stock):
+        largest = None
+        for p in self.parts:
+            if p.remaining() > 0 and p.length < stock.length:
+                if largest is None or p.length > largest.length:
+                    largest = p
+        return largest
 
 
 if __name__ == "__main__":
-    stocks = [(5600, -1)]
-    parts = [(1380, 22), (1520, 25), (1560, 12), (1710, 14) , (1820,18), (1880, 18),
-    (1930, 20), (2000, 10), (2050, 12), (2100, 14), (2140, 16), (2150, 18), (2200, 20)]
+    stocks = [stock(5600)] #for now assume that we have an unlimited quantitiy of stock
+    parts = [part(1380, 22), part(1520, 25), part(1560, 12), part(1710, 14) , part(1820,18), part(1880, 18),
+    part(1930, 20), part(2000, 10), part(2050, 12), part(2100, 14), part(2140, 16), part(2150, 18), part(2200, 20)]
 
     c = cutter(stocks, parts)
+    c.solve()
+    waste = 0
+    for p in c.patterns:
+        waste += p.get_waste()
+        print p.print_pattern()
+
+    print "waste: ", waste * 100.0 / (len(c.patterns)*5600.0)
+    print "total waste: ", waste
+    print "number of patterns: " , len(c.patterns)

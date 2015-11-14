@@ -1,3 +1,5 @@
+import part
+
 class stock(object):
     """the stock takes a numeric length in units"""
     def __init__(self, length):
@@ -7,19 +9,26 @@ class stock(object):
 
     """cuts the stock to the given length and returns
     a new stock at the given length"""
-    def cut(self, length):
-        if self.length > length:
-            self.cuts.append(length)
-            self.length = self.length - length
-            return stock(length)
-
+    def cut(self, part):
+        if self.length > part.length:
+            self.cuts.append(part)
+            self.length -= part.length
         else:
             raise ValueError("Cut length longer than remaining length")
 
     def get_waste(self):
-        return self.length / self.start_length
+        return self.length * 1.0 / self.start_length * 1.0
+
+    def print_pattern(self):
+        pattern = ""
+        for c in self.cuts:
+            pattern += str(c.length) + ":"
+        pattern += " | " + str(self.length)
+        print pattern
 
     def __eq__(self, other):
+        if other is None:
+            return False
         if self.length == other.length:
             return True
         else:
